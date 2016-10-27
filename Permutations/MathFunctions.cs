@@ -8,7 +8,7 @@ namespace Permutations
 {
     static public class MathFunctions
     {
-        public static int GreatestCommmonDivisor(int a, int b)
+        internal static int GreatestCommmonDivisor(int a, int b)
         {
             while(a!=b)
             {
@@ -18,12 +18,12 @@ namespace Permutations
             return a;
         }
 
-        public static int LeastCommonMultiple(int a, int b)
+        internal static int LeastCommonMultiple(int a, int b)
         {
             return (a * b) / GreatestCommmonDivisor(a, b);
         }
 
-        public static int LCMForArray(int[] array)
+        internal static int LCMForArray(int[] array)
         {
             int result = 0;
             bool flag = true;
@@ -39,5 +39,18 @@ namespace Permutations
             }
             return result;
         }
+
+        public static int Factorial(int n)
+        {
+            if (n < 0) throw new Exception("Number is lower than zero.");
+            int returnedValue = 1;
+            for (int i = 1; i <= n; i++)
+            {
+                returnedValue *= i;
+            }
+            return returnedValue;
+        }
+
+        
     }
 }
