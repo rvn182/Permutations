@@ -755,7 +755,7 @@ namespace Permutations
                                 if (ArrayFunctions.CompareIntArrays(folding, permutations[k]))
                                 {
                                     flag = true;
-                                    Console.WriteLine("i: " + i + " j: " + j);
+                                    //Console.WriteLine("i: " + i + " j: " + j);
                                 }
                             }
                         }
