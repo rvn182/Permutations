@@ -708,5 +708,70 @@ namespace Permutations
                 returnedPermutations[i] = NextElementAntilexicographical(returnedPermutations[i - 1]);
             return returnedPermutations;
         }
+
+        static bool IsAnyIdentity(int[][] permutations, int length)
+        {
+            int[] e = WithoutRepetition.CreateIdentityPermutation(length);
+            for (int i = 0; i < permutations.Length; i++)
+                if (ArrayFunctions.CompareIntArrays(permutations[i], e))
+                    return true;
+            return false;
+        }
+
+        static bool IsAnyReverse(int[][] permutations)
+        {
+            for (int i = 0; i < permutations.Length; i++)
+            {
+                bool flag = false;
+                for (int j = 0; j < permutations.Length; j++)
+                {
+                    if (!flag)
+                    {
+                        int[] reverse = WithoutRepetition.ReversePermutation(permutations[j]);
+                        if (ArrayFunctions.CompareIntArrays(permutations[i], reverse))
+                            flag = true;
+                    }
+                }
+                if (!flag)
+                    return false;
+            }
+            return true;
+        }
+
+        static bool IsAnyFolding(int[][] permutations)
+        {
+            for (int i = 0; i < permutations.Length; i++)
+            {
+                for (int j = 0; j < permutations.Length; j++)
+                {
+                    if (j != i)
+                    {
+                        int[] folding = WithoutRepetition.FoldingPermutations(permutations[i], permutations[j]);
+                        bool flag = false;
+                        for (int k = 0; k < permutations.Length; k++)
+                        {
+                            if (!flag)
+                            {
+                                if (ArrayFunctions.CompareIntArrays(folding, permutations[k]))
+                                {
+                                    flag = true;
+                                    Console.WriteLine("i: " + i + " j: " + j);
+                                }
+                            }
+                        }
+                        if (!flag)
+                            return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        public static bool IsGroup(int[][] permutations)
+        {
+            if (IsAnyFolding(permutations) && IsAnyIdentity(permutations, permutations[0].Length) && IsAnyReverse(permutations))
+                return true;
+            return false;
+        }
     }
 }
