@@ -75,7 +75,7 @@ namespace Permutations
             return false;
         }
 
-        static public int[] FoldingPermutations(int[] permutation1, int[] permutation2)
+        static public int[] CompositionPermutation(int[] permutation1, int[] permutation2)
         {
             if (!CheckTwoPermutations(permutation1, permutation2)) throw new Exception("Bad format of permutations");
             int[] returnedArray = new int[permutation1.Length];
@@ -261,7 +261,7 @@ namespace Permutations
 
             returnedPermutation = permutation;
             for (int i = 2; i <= power; i++)
-                returnedPermutation = FoldingPermutations(returnedPermutation, permutation);
+                returnedPermutation = CompositionPermutation(returnedPermutation, permutation);
 
             return returnedPermutation;
         }
@@ -738,7 +738,7 @@ namespace Permutations
             return true;
         }
 
-        static bool IsAnyFolding(int[][] permutations)
+        static bool IsAnyComposition(int[][] permutations)
         {
             for (int i = 0; i < permutations.Length; i++)
             {
@@ -746,13 +746,13 @@ namespace Permutations
                 {
                     if (j != i)
                     {
-                        int[] folding = WithoutRepetition.FoldingPermutations(permutations[i], permutations[j]);
+                        int[] composition = WithoutRepetition.CompositionPermutation(permutations[i], permutations[j]);
                         bool flag = false;
                         for (int k = 0; k < permutations.Length; k++)
                         {
                             if (!flag)
                             {
-                                if (ArrayFunctions.CompareIntArrays(folding, permutations[k]))
+                                if (ArrayFunctions.CompareIntArrays(composition, permutations[k]))
                                 {
                                     flag = true;
                                     //Console.WriteLine("i: " + i + " j: " + j);
@@ -769,7 +769,7 @@ namespace Permutations
 
         public static bool IsGroup(int[][] permutations)
         {
-            if (IsAnyFolding(permutations) && IsAnyIdentity(permutations, permutations[0].Length) && IsAnyReverse(permutations))
+            if (IsAnyComposition(permutations) && IsAnyIdentity(permutations, permutations[0].Length) && IsAnyReverse(permutations))
                 return true;
             return false;
         }
