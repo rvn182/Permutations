@@ -416,7 +416,7 @@ namespace Permutations
             return matrix;
         }
 
-        static public long NumberOfPermutation(int[] permutation)
+        static public long PermutationIndexLO(int[] permutation) // LO - Lexicographical order
         {
             Check(permutation);
 
@@ -509,7 +509,7 @@ namespace Permutations
             return true;
         }
 
-        static public int[] PermutationByNumber(int number, int n)
+        static public int[] PermutationFromIndexLO(int number, int n) //lexicographical order
         {
             int[] vectorOfInversions = VectorByNumber(number, n);
             int[] permutation = VectorToPermutation(vectorOfInversions);
@@ -601,7 +601,7 @@ namespace Permutations
             int indexOfArray = 0;
             foreach (int i in listOfIndex)
             {
-                returnedArray[indexOfArray] = PermutationByNumber(i + 1, type.Length - 1);
+                returnedArray[indexOfArray] = PermutationFromIndexLO(i + 1, type.Length - 1);
                 indexOfArray++;
             }
 
@@ -633,7 +633,7 @@ namespace Permutations
             int indexOfArray = 0;
             foreach (int i in listOfIndex)
             {
-                returnedArray[indexOfArray] = WithoutRepetition.PermutationByNumber(i + 1, length);
+                returnedArray[indexOfArray] = WithoutRepetition.PermutationFromIndexLO(i + 1, length);
                 indexOfArray++;
             }
             return returnedArray;
