@@ -863,5 +863,27 @@ namespace Permutations
                 return permutation;
             }
         }
+
+        static public int CountNonEvenCycles(int[] permutation)
+        {
+            Check(permutation);
+            int[][] permutationCycles = WithoutRepetition.VectorToCycle(permutation);
+            int count = 0;
+            for (int i = 0; i < permutationCycles.Length; i++)
+                if (permutationCycles[i].Length % 2 == 1) count++;
+            return count;
+        }
+
+
+        static public int CountFixedPoints(int[] permutation)
+        {
+            Check(permutation);
+            int[][] permutationCycles = WithoutRepetition.VectorToCycle(permutation);
+            int count = 0;
+            for (int i = 0; i < permutationCycles.Length; i++)
+                if (permutationCycles[i].Length == 1)
+                    count++;
+            return count;
+        }
     }
 }
