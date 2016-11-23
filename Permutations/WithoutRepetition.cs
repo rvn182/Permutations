@@ -115,11 +115,53 @@ namespace Permutations
                 }
             }
 
-            int[][] returnedPermutation = new int[number][];
+            int[][] cyclesToSort = new int[number][];
 
+            
             for (int i = 0; i < number; i++)
             {
-                returnedPermutation[i] = collection[i].list.ToArray();
+                cyclesToSort[i] = collection[i].list.ToArray();
+            }
+
+            for(int i=0;i<cyclesToSort.Length;i++)
+                for(int j=0;j<cyclesToSort.Length-1;j++)
+                    if(cyclesToSort[j].Min()>cyclesToSort[j+1].Min())
+                    {
+                        int[] temp = cyclesToSort[j + 1];
+                        cyclesToSort[j] = cyclesToSort[j + 1];
+                        cyclesToSort[j + 1] = temp;
+                    }
+            int[][] returnedPermutation = new int[cyclesToSort.Length][];
+            int indexOfCycle = 0;
+            foreach(int[] cycleToSort in cyclesToSort)
+            {
+                int maxValue = cycleToSort.Max();
+                bool flag = true;
+                int indexOfMax = 0;
+                int index = 0;
+                while(flag)
+                {
+                    if(cycleToSort[index]==maxValue)
+                    {
+                        indexOfMax = index;
+                        flag = false;
+                    }
+                    else
+                        index++;
+                }
+                returnedPermutation[indexOfCycle] = new int[cycleToSort.Length];
+                int indexOfElement = 0;
+                for (int i = indexOfMax; i < cycleToSort.Length; i++)
+                {
+                    returnedPermutation[indexOfCycle][indexOfElement] = cycleToSort[i];
+                    indexOfElement++;
+                }
+                for (int i = 0; i < indexOfMax; i++)
+                {
+                    returnedPermutation[indexOfCycle][indexOfElement] = cycleToSort[i];
+                    indexOfElement++;
+                }
+                indexOfCycle++;
             }
 
             return returnedPermutation;
