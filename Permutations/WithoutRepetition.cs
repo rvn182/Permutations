@@ -195,7 +195,7 @@ namespace Permutations
         static public bool IsEven(int[] permutation)
         {
             Check(permutation);
-            int disorders = CountDisorders(permutation);
+            int disorders = CountInversions(permutation);
             if (disorders % 2 == 0) return true;
             return false;
         }
@@ -212,6 +212,30 @@ namespace Permutations
             Check(permutation);
             if (IsEven(permutation)) return 1;
             return -1;
+        }
+
+        static public int SignOfPermutation1(int[] permutation) //ze wzoru (-1)^(liczby inwersji)
+        {
+            int sign = MathFunctions.Exponentation(-1, CountInversions(permutation));
+            return sign;
+        }
+
+        static public int SignOfPermutation2(int[] permutation) //ze wzoru (-1)^(n-c(p))
+        {
+            int sign = MathFunctions.Exponentation(-1, permutation.Length-CountCycles(permutation));
+            return sign;
+        }
+
+        static public int SignOfPermutation3(int[] permutation) //ze wzoru (-1)^(n+c(p))
+        {
+            int sign = MathFunctions.Exponentation(-1, permutation.Length + CountCycles(permutation));
+            return sign;
+        }
+
+        static public int SignOfPermutation4(int[] permutation) //ze wzoru (-1)^(cpd(p))
+        {
+            int sign = MathFunctions.Exponentation(-1, CountEvenCycles(permutation));
+            return sign;
         }
 
         static public bool IsTransposition(int[] permutation)

@@ -51,6 +51,13 @@ namespace Permutations
             return returnedValue;
         }
 
+        internal static int Exponentation(int _base, int exponent)
+        {
+            int result = 1;
+            for (int i = exponent; i >= 0; i--)
+                result *= _base;
+            return result;
+        }
         
     }
 }
