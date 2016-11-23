@@ -430,17 +430,15 @@ namespace Permutations
                 number--;
             }
 
-            return returnedValue + 1;
+            return returnedValue;
         }
 
-        static public int[] VectorByNumber(int number, int n) //wektor inwersji z numeru i liczebności zbioru
+        static public int[] VectorFromNumber(int number, int n) //wektor inwersji z numeru i liczebności zbioru
         {
-            if ((number > MathFunctions.Factorial(n)) || number < 1 || n < 2) throw new Exception("Bad value of typed data.");
+            if ((number > MathFunctions.Factorial(n)) || number < 0 || n < 2) throw new Exception("Bad value of typed data.");
 
             int[] vectorOfInversion = new int[n];
             int factorial;
-
-            number--;
             n--;
             for (int i = 0; i < vectorOfInversion.Length; i++)
             {
@@ -452,6 +450,8 @@ namespace Permutations
 
             return vectorOfInversion;
         }
+
+       
 
         static public int[] VectorToPermutation(int[] vectorOfInversions)
         {
@@ -511,7 +511,7 @@ namespace Permutations
 
         static public int[] PermutationFromIndexLO(int number, int n) //lexicographical order
         {
-            int[] vectorOfInversions = VectorByNumber(number, n);
+            int[] vectorOfInversions = VectorFromNumber(number, n);
             int[] permutation = VectorToPermutation(vectorOfInversions);
 
             return permutation;
@@ -772,6 +772,96 @@ namespace Permutations
             if (IsAnyComposition(permutations) && IsAnyIdentity(permutations, permutations[0].Length) && IsAnyReverse(permutations))
                 return true;
             return false;
+        }
+
+        static public int[] AntiInversionVector(int[] permutation)
+        {
+            Check(permutation);
+            int[] vector = new int[permutation.Length];
+            for (int i = 0; i < vector.Length; i++)
+            {
+                vector[i] = 0;
+            }
+            for (int i = 0; i < permutation.Length; i++)
+            {
+                for (int j = i - 1; j >= 0; j--)
+                {
+                    if (permutation[j] > permutation[i]) vector[i]++;
+                }
+            }
+
+            return vector;
+        }
+
+        static public long PermutationIndexALO(int[] permutation) // ALO - Anti Lexicographical order
+        {
+            Check(permutation);
+
+            int returnedValue = 0;
+            int[] vectorOfInversion = AntiInversionVector(permutation);
+            int number = vectorOfInversion.Length - 1;
+
+            for (int i = vectorOfInversion.Length - 1; i >= 0; i--)
+            {
+                returnedValue += vectorOfInversion[i] * MathFunctions.Factorial(number);
+                number--;
+            }
+
+            return returnedValue;
+        }
+
+        static int[] AntiVectorFromNumber(int number, int n) //antywektor inwersji z numeru i liczebności zbioru
+        {
+            int[] inversionVector = WithoutRepetition.VectorFromNumber(number, n);
+            int[] antiInversionVector = new int[n];
+            int index = n - 1;
+            for (int i = 0; i < antiInversionVector.Length; i++)
+            {
+                antiInversionVector[i] = inversionVector[index];
+                index--;
+            }
+            return antiInversionVector;
+        }
+
+        static int[] AntiVectorToPermutation(int[] antiVectorOfInversions)
+        {
+            //if (!CheckVectorOfInversion(vectorOfInversions)) throw new Exception("Bad format of vector.");
+
+            int[] indentityOfPermutation = WithoutRepetition.CreateIdentityPermutation(antiVectorOfInversions.Length);
+            bool[] logicArray = new bool[antiVectorOfInversions.Length]; // false-nieużyta, true-użyta
+            int[] permutation = new int[antiVectorOfInversions.Length];
+
+            for (int i = permutation.Length - 1; i >= 0; i--)
+            {
+                int number = antiVectorOfInversions[i], index = permutation.Length - 1;
+
+                while (number != 0)
+                {
+                    if (logicArray[index])
+                        index--;
+                    else
+                    {
+                        index--;
+                        number--;
+                    }
+                }
+                while (logicArray[index])
+                    index--;
+                permutation[i] = indentityOfPermutation[index];
+                logicArray[index] = true;
+            }
+
+            return permutation;
+        }
+
+        static public int[] PermutationFromIndexALO(int number, int n)
+        {
+            {
+                int[] antiVectorOfInversions = AntiVectorFromNumber(number, n);
+                int[] permutation = AntiVectorToPermutation(antiVectorOfInversions);
+
+                return permutation;
+            }
         }
     }
 }
