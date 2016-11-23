@@ -178,7 +178,7 @@ namespace Permutations
             return true;
         }
 
-        static int CountDisorders(int[] permutation)
+        static public int CountDisorders(int[] permutation)
         {
             int disorders = 0;
             Check(permutation);
