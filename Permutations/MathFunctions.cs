@@ -8,6 +8,7 @@ namespace Permutations
 {
     static public class MathFunctions
     {
+        static int[] factorialValues = { 1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800, 39916800, 479001600 };
         internal static int GreatestCommmonDivisor(int a, int b)
         {
             while(a!=b)
@@ -43,12 +44,16 @@ namespace Permutations
         public static int Factorial(int n)
         {
             if (n < 0) throw new Exception("Number is lower than zero.");
+            if (n < 12)
+                return factorialValues[n];
+            /*
             int returnedValue = 1;
             for (int i = 1; i <= n; i++)
             {
                 returnedValue *= i;
             }
-            return returnedValue;
+            return returnedValue;*/
+            throw new Exception("To highest value.");
         }
 
         internal static int Exponentation(int _base, int exponent)

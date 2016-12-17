@@ -75,7 +75,7 @@ namespace Permutations
             return false;
         }
 
-        static public int[] CompositionPermutation(int[] permutation1, int[] permutation2)
+        static public int[] CompositionOfPermutation(int[] permutation1, int[] permutation2)
         {
             if (!CheckTwoPermutations(permutation1, permutation2)) throw new Exception("Bad format of permutations");
             int[] returnedArray = new int[permutation1.Length];
@@ -86,7 +86,7 @@ namespace Permutations
             return returnedArray;
         }
 
-        static public int[][] VectorToCycle(int[] permutation)
+        static public int[][] PermutationToCycle(int[] permutation)
         {
             Check(permutation);
             int number = 0;
@@ -170,7 +170,7 @@ namespace Permutations
         static public int OrderOfPermutation(int[] permutation)
         {
             Check(permutation);
-            int[][] permutationCycle = VectorToCycle(permutation);
+            int[][] permutationCycle = PermutationToCycle(permutation);
             if (permutationCycle.Length == 1) return permutationCycle[0].Length;
             int[] arrayLCM = new int[permutationCycle.Length];
             for (int i = 0; i < permutationCycle.Length; i++) arrayLCM[i] = permutationCycle[i].Length;
@@ -194,7 +194,7 @@ namespace Permutations
         static public int[] TypeOfPermutation(int[] permutation)
         {
             Check(permutation);
-            int[][] permutationCycle = WithoutRepetition.VectorToCycle(permutation);
+            int[][] permutationCycle = WithoutRepetition.PermutationToCycle(permutation);
             int[] returnedVector = new int[permutation.Length + 1];
             //typ tutaj jest przedstawiony jako [indeks tablicy] do potęgi wartości tablicy pod danym indeksem, 
             //pierwszy indeks [0] będzie zawsze zero, 
@@ -212,15 +212,15 @@ namespace Permutations
             return true;
         }
 
-        static public bool IsDisorder(int[] permutation)
+        static public bool IsDeregement(int[] permutation)
         {
             Check(permutation);
             for (int i = 0; i < permutation.Length; i++)
                 if (permutation[i] == i + 1) return false;
             return true;
         }
-
-        static public int CountDisorders(int[] permutation)
+        /*
+        static public int CountDeregements(int[] permutation)
         {
             int disorders = 0;
             Check(permutation);
@@ -232,51 +232,68 @@ namespace Permutations
                 }
             }
             return disorders;
-        }
+        }*/
 
         static public bool IsEven(int[] permutation)
         {
             Check(permutation);
-            int disorders = CountInversions(permutation);
-            if (disorders % 2 == 0) return true;
+            if (SignOfPermutation1(permutation) == 1)
+                return true;
             return false;
         }
 
-        static public bool IsNonEven(int[] permutation)
+        static public bool IsOdd(int[] permutation)
         {
             Check(permutation);
-            if (IsEven(permutation)) return false;
+            if (SignOfPermutation1(permutation) == 1)
+                return true;
             return true;
         }
 
-        static public int SignOfPermutation(int[] permutation)
+        /*static public int SignOfPermutation(int[] permutation)
         {
             Check(permutation);
             if (IsEven(permutation)) return 1;
             return -1;
-        }
+        }*/
 
         static public int SignOfPermutation1(int[] permutation) //ze wzoru (-1)^(liczby inwersji)
         {
-            int sign = MathFunctions.Exponentation(-1, CountInversions(permutation));
+            Check(permutation);
+            //int sign = MathFunctions.Exponentation(-1, InversionsCount(permutation));
+            int sign = -1;
+            if (InversionsCount(permutation) % 2 == 0)
+                sign = 1;
             return sign;
         }
 
         static public int SignOfPermutation2(int[] permutation) //ze wzoru (-1)^(n-c(p))
         {
-            int sign = MathFunctions.Exponentation(-1, permutation.Length-CountCycles(permutation));
+            Check(permutation);
+            int sign = -1;
+            if ((permutation.Length - AllCyclesCount(permutation)) % 2 == 0)
+                sign = 1;
+            //int sign = MathFunctions.Exponentation(-1, permutation.Length-AllCyclesCount(permutation));
             return sign;
         }
 
         static public int SignOfPermutation3(int[] permutation) //ze wzoru (-1)^(n+c(p))
         {
-            int sign = MathFunctions.Exponentation(-1, permutation.Length + CountCycles(permutation));
+            Check(permutation);
+            int sign = -1;
+            if ((permutation.Length + AllCyclesCount(permutation)) % 2 == 0)
+                sign = 1;
+            //int sign = MathFunctions.Exponentation(-1, permutation.Length + AllCyclesCount(permutation));
             return sign;
         }
 
         static public int SignOfPermutation4(int[] permutation) //ze wzoru (-1)^(cpd(p))
         {
-            int sign = MathFunctions.Exponentation(-1, CountEvenCycles(permutation));
+            Check(permutation);
+            int sign = -1;
+            if (EvenCyclesCount(permutation) % 2 == 0)
+                sign = 1;
+            //int sign = MathFunctions.Exponentation(-1, EvenCyclesCount(permutation));
             return sign;
         }
 
@@ -284,7 +301,7 @@ namespace Permutations
         {
             Check(permutation);
             bool flag = false;
-            int[][] permutationCycle = WithoutRepetition.VectorToCycle(permutation);
+            int[][] permutationCycle = WithoutRepetition.PermutationToCycle(permutation);
             for (int i = 0; i < permutationCycle.Length; i++)
             {
                 if (permutationCycle[i].Length != 1)
@@ -327,7 +344,7 @@ namespace Permutations
 
             returnedPermutation = permutation;
             for (int i = 2; i <= power; i++)
-                returnedPermutation = CompositionPermutation(returnedPermutation, permutation);
+                returnedPermutation = CompositionOfPermutation(returnedPermutation, permutation);
 
             return returnedPermutation;
         }
@@ -335,7 +352,7 @@ namespace Permutations
         static public bool IsOneCycle(int[] permutation)
         {
             Check(permutation);
-            int[][] permutationCycle = VectorToCycle(permutation);
+            int[][] permutationCycle = PermutationToCycle(permutation);
             if (permutationCycle.Length == 1) return true;
             return false;
         }
@@ -359,24 +376,24 @@ namespace Permutations
             return vector;
         }
 
-        static public int CountCycles(int[] permutation)
+        static public int AllCyclesCount(int[] permutation)
         {
             Check(permutation);
-            int[][] permutationCycles = VectorToCycle(permutation);
+            int[][] permutationCycles = PermutationToCycle(permutation);
             return permutationCycles.Length;
         }
 
-        static public int CountEvenCycles(int[] permutation)
+        static public int EvenCyclesCount(int[] permutation)
         {
             Check(permutation);
-            int[][] permutationCycles = WithoutRepetition.VectorToCycle(permutation);
+            int[][] permutationCycles = WithoutRepetition.PermutationToCycle(permutation);
             int count = 0;
             for (int i = 0; i < permutationCycles.Length; i++)
                 if (permutationCycles[i].Length % 2 == 0) count++;
             return count;
         }
 
-        static public int[,] VectorToMatrix(int[] permutation)
+        static public int[,] PermutationToMatrix(int[] permutation)
         {
             Check(permutation);
             int[,] matrix = new int[permutation.Length, permutation.Length];
@@ -392,7 +409,7 @@ namespace Permutations
             return matrix;
         }
 
-        static public int[] CycleToVector(int[][] cyclePermutation)
+        static public int[] CycleToPermutation(int[][] cyclePermutation)
         {
             if (!CheckCyclePermutation(cyclePermutation)) throw new Exception("Bad format of permutation");
             int count = CountElements(cyclePermutation);
@@ -447,7 +464,7 @@ namespace Permutations
             return true;
         }
 
-        static public int CountInversions(int[] permutation)
+        static public int InversionsCount(int[] permutation)
         {
             Check(permutation);
             int count = 0;
@@ -461,10 +478,10 @@ namespace Permutations
 
             return count;
         }
-
-        static public int[,] MatrixOfInversions(int[] permutation)
+        /*
+        static public int[,] ListOfInversions(int[] permutation)
         {
-            int numberOfInversion = CountInversions(permutation);
+            int numberOfInversion = InversionsCount(permutation);
             int[,] matrix = new int[numberOfInversion, 2];
             int index = 0;
             for (int i = 0; i < permutation.Length; i++)
@@ -481,8 +498,8 @@ namespace Permutations
             }
             return matrix;
         }
-
-        static public long PermutationIndexLO(int[] permutation) // LO - Lexicographical order
+        */
+        static public int PermutationIndexInLexOrder(int[] permutation) // LO - Lexicographical order
         {
             Check(permutation);
 
@@ -575,7 +592,7 @@ namespace Permutations
             return true;
         }
 
-        static public int[] PermutationFromIndexLO(int number, int n) //lexicographical order
+        static public int[] PermutationFromLexOrderIndex(int number, int n) //lexicographical order
         {
             int[] vectorOfInversions = VectorFromNumber(number, n);
             int[] permutation = VectorToPermutation(vectorOfInversions);
@@ -583,7 +600,7 @@ namespace Permutations
             return permutation;
         }
 
-        static public int[][] PermutationLexicographical(int n)
+        static public int[][] AllPermutationsInLexOrder(int n)
         {
             if (n < 2) throw new Exception("Bad number of length.");
 
@@ -597,7 +614,7 @@ namespace Permutations
             return permutations;
         }
 
-        static public int[] NextElementLexicographical(int[] previousPermutation)
+        static int[] NextElementLexicographical(int[] previousPermutation)
         {
             int[] returnedPermutation = new int[previousPermutation.Length];
             int index = ArrayFunctions.DecreasingSequence(previousPermutation); //index przechowuje indeks pierwszego elementu ciągu malejącego w tablicy
@@ -646,7 +663,7 @@ namespace Permutations
             return returnedPermutation;
         }
 
-        static public int[][] GeneratePermutationsOfType(int[] type)
+        static public int[][] AllPermutationsOfGivenType(int[] type)
         {
             List<int> listOfIndex = new List<int>();
             int factorial = MathFunctions.Factorial(type.Length - 1);
@@ -667,14 +684,14 @@ namespace Permutations
             int indexOfArray = 0;
             foreach (int i in listOfIndex)
             {
-                returnedArray[indexOfArray] = PermutationFromIndexLO(i + 1, type.Length - 1);
+                returnedArray[indexOfArray] = PermutationFromLexOrderIndex(i + 1, type.Length - 1);
                 indexOfArray++;
             }
 
             return returnedArray;
         }
 
-        static public int[][] GenerateWithOrder(int order, int length)
+        static public int[][] AllPermutationsOfGivenOrder(int order, int length)
         {
             if (order < 1)
                 throw new Exception("Bad number of order.");
@@ -699,25 +716,27 @@ namespace Permutations
             int indexOfArray = 0;
             foreach (int i in listOfIndex)
             {
-                returnedArray[indexOfArray] = WithoutRepetition.PermutationFromIndexLO(i + 1, length);
+                returnedArray[indexOfArray] = WithoutRepetition.PermutationFromLexOrderIndex(i + 1, length);
                 indexOfArray++;
             }
             return returnedArray;
         }
 
-        public static int[] RootOfPermutation(int[] permutation, int power)
+        public static int[][] RootOfPermutation(int[] permutation, int root)
         {
             Check(permutation);
+            List<int[]> list = new List<int[]>();
             int[] testedPermutation = WithoutRepetition.CreateIdentityPermutation(permutation.Length);
-            if (ArrayFunctions.CompareIntArrays(permutation, WithoutRepetition.PowerOfPermutation(testedPermutation, power)))
-                return testedPermutation;
+            if (ArrayFunctions.CompareIntArrays(permutation, WithoutRepetition.PowerOfPermutation(testedPermutation, root)))
+                list.Add(testedPermutation);
             for (int i = 1; i < MathFunctions.Factorial(permutation.Length); i++)
             {
                 testedPermutation = WithoutRepetition.NextElementLexicographical(testedPermutation);
-                if (ArrayFunctions.CompareIntArrays(permutation, WithoutRepetition.PowerOfPermutation(testedPermutation, power)))
-                    return testedPermutation;
+                if (ArrayFunctions.CompareIntArrays(permutation, WithoutRepetition.PowerOfPermutation(testedPermutation, root)))
+                    list.Add(testedPermutation);
             }
-            return testedPermutation;
+            int[][] toReturn = list.ToArray();
+            return toReturn;
         }
 
         static int[] NextElementAntilexicographical(int[] previousPermutation)
@@ -763,7 +782,7 @@ namespace Permutations
             return returnedPermutation;
         }
 
-        static public int[][] PermutationAntylexicographical(int n)
+        static public int[][] AllPermutationsInAntiLexOrder(int n)
         {
             if (n < 2) throw new Exception("Bad number of length.");
             int count = MathFunctions.Factorial(n);
@@ -775,9 +794,9 @@ namespace Permutations
             return returnedPermutations;
         }
 
-        static bool IsAnyIdentity(int[][] permutations, int length)
+        static bool IsAnyIdentity(int[][] permutations)
         {
-            int[] e = WithoutRepetition.CreateIdentityPermutation(length);
+            int[] e = WithoutRepetition.CreateIdentityPermutation(permutations[0].Length);
             for (int i = 0; i < permutations.Length; i++)
                 if (ArrayFunctions.CompareIntArrays(permutations[i], e))
                     return true;
@@ -810,9 +829,9 @@ namespace Permutations
             {
                 for (int j = 0; j < permutations.Length; j++)
                 {
-                    if (j != i)
-                    {
-                        int[] composition = WithoutRepetition.CompositionPermutation(permutations[i], permutations[j]);
+                    //if (j != i)
+                    //{
+                        int[] composition = WithoutRepetition.CompositionOfPermutation(permutations[i], permutations[j]);
                         bool flag = false;
                         for (int k = 0; k < permutations.Length; k++)
                         {
@@ -827,15 +846,15 @@ namespace Permutations
                         }
                         if (!flag)
                             return false;
-                    }
+                    //}
                 }
             }
             return true;
         }
 
-        public static bool IsGroup(int[][] permutations)
+        public static bool IsPermutationGroup(int[][] permutations)
         {
-            if (IsAnyComposition(permutations) && IsAnyIdentity(permutations, permutations[0].Length) && IsAnyReverse(permutations))
+            if (IsAnyComposition(permutations) && IsAnyIdentity(permutations) && IsAnyReverse(permutations))
                 return true;
             return false;
         }
@@ -859,7 +878,7 @@ namespace Permutations
             return vector;
         }
 
-        static public long PermutationIndexALO(int[] permutation) // ALO - Anti Lexicographical order
+        static public long PermutationIndexInAntiLexOrder(int[] permutation) // ALO - Anti Lexicographical order
         {
             Check(permutation);
 
@@ -920,7 +939,7 @@ namespace Permutations
             return permutation;
         }
 
-        static public int[] PermutationFromIndexALO(int number, int n)
+        static public int[] PermutationFromAntiLexOrderIndex(int number, int n)
         {
             {
                 int[] antiVectorOfInversions = AntiVectorFromNumber(number, n);
@@ -930,10 +949,10 @@ namespace Permutations
             }
         }
 
-        static public int CountNonEvenCycles(int[] permutation)
+        static public int OddCyclesCount(int[] permutation)
         {
             Check(permutation);
-            int[][] permutationCycles = WithoutRepetition.VectorToCycle(permutation);
+            int[][] permutationCycles = WithoutRepetition.PermutationToCycle(permutation);
             int count = 0;
             for (int i = 0; i < permutationCycles.Length; i++)
                 if (permutationCycles[i].Length % 2 == 1) count++;
@@ -941,15 +960,303 @@ namespace Permutations
         }
 
 
-        static public int CountFixedPoints(int[] permutation)
+        static public int FixedPointsCount(int[] permutation)
         {
             Check(permutation);
-            int[][] permutationCycles = WithoutRepetition.VectorToCycle(permutation);
+            int[][] permutationCycles = WithoutRepetition.PermutationToCycle(permutation);
             int count = 0;
             for (int i = 0; i < permutationCycles.Length; i++)
                 if (permutationCycles[i].Length == 1)
                     count++;
             return count;
         }
+
+        public static int[][] PermutationToCompositionOfTranpositions1(int[] permutation)
+        {
+            Check(permutation);
+            if (isIdentity(permutation))
+                throw new Exception("Permutation is identity. There aren't any transposistions.");
+            int[][] permutationCycle = WithoutRepetition.PermutationToCycle(permutation);
+            int[] identity = WithoutRepetition.CreateIdentityPermutation(permutation.Length);
+            int counter = 0;
+            for (int i = 0; i < permutationCycle.Length; i++)
+                if (permutationCycle[i].Length > 1)
+                    counter += (permutationCycle[i].Length - 1);
+            int[][] transpositions = new int[counter][];
+            int indexOfTransposition = 0;
+            int[][] cyclesInNewOrder = new int[permutationCycle.Length][];
+            for (int i = 0; i < permutationCycle.Length; i++)
+            {
+                int min = permutationCycle[i].Min();
+                int indexOfMin = 0;
+                for (int j = 0; j < permutationCycle[i].Length; j++)
+                    if (permutationCycle[i][j] == min)
+                        indexOfMin = j;
+                int index = 0;
+                cyclesInNewOrder[i] = new int[permutationCycle[i].Length];
+                for (int j = indexOfMin; j < permutationCycle[i].Length; j++)
+                {
+                    cyclesInNewOrder[i][index] = permutationCycle[i][j];
+                    index++;
+                }
+                for (int j = 0; j < indexOfMin; j++)
+                {
+                    cyclesInNewOrder[i][index] = permutationCycle[i][j];
+                    index++;
+                }
+
+                int indexOfMinVec = 0;
+
+                for (int j = 0; j < identity.Length; j++)
+                    if (identity[j] == min)
+                        indexOfMinVec = j;
+
+                for (int j = cyclesInNewOrder[i].Length - 1; j > 0; j--)
+                {
+                    int indexOfJ = 0;
+                    for (int k = 0; k < identity.Length; k++)
+                        if (identity[k] == cyclesInNewOrder[i][j])
+                            indexOfJ = k;
+                    transpositions[indexOfTransposition] = WithoutRepetition.CreateIdentityPermutation(permutation.Length);
+                    transpositions[indexOfTransposition][indexOfMinVec] = transpositions[indexOfTransposition][indexOfJ];
+                    transpositions[indexOfTransposition][indexOfJ] = min;
+                    indexOfTransposition++;
+                }
+            }
+            return transpositions;
+        }
+
+        public static string PermutationGroupFacts(int[][] permutations)
+        {
+            if (!WithoutRepetition.IsPermutationGroup(permutations))
+                throw new Exception("Permutations aren't a group.");
+            int[][] permutationsNewOrder = new int[permutations.Length][];
+            permutationsNewOrder[0] = WithoutRepetition.CreateIdentityPermutation(permutations[0].Length);
+            int counter = 1;
+            int indexOfPermutation = 0;
+            while (counter < permutations.Length)
+            {
+                if (ArrayFunctions.CompareIntArrays(permutations[indexOfPermutation], permutationsNewOrder[0]))
+                    indexOfPermutation++;
+                else
+                {
+                    permutationsNewOrder[counter] = permutations[indexOfPermutation];
+                    indexOfPermutation++;
+                    counter++;
+                }
+            }
+            string toReturn = "";
+            for (int i = 1; i < permutationsNewOrder.Length; i++)
+            {
+                toReturn += "p" + i + "=<";
+                for (int j = 0; j < permutationsNewOrder[i].Length; j++)
+                {
+                    if (j != permutationsNewOrder[i].Length - 1)
+                        toReturn += permutationsNewOrder[i][j] + ",";
+                    else
+                        toReturn += permutationsNewOrder[i][j];
+                }
+                toReturn += ">\n";
+            }
+            toReturn += "\n";
+            for (int i = 1; i < permutationsNewOrder.Length; i++)
+            {
+                for (int j = 1; j < permutationsNewOrder.Length; j++)
+                {
+
+                    int[] composition = WithoutRepetition.CompositionOfPermutation(permutationsNewOrder[i], permutationsNewOrder[j]);
+                    bool flag = false;
+                    for (int k = 1; k < permutationsNewOrder.Length; k++)
+                    {
+                        if (!flag)
+                        {
+                            if (ArrayFunctions.CompareIntArrays(composition, permutationsNewOrder[k]))
+                            {
+                                toReturn += "p" + i + "*p" + j + "=p" + k + "\n";
+                                flag = true;
+                                //Console.WriteLine("i: " + i + " j: " + j);
+                            }
+
+                        }
+
+
+                    }
+                    if (!flag)
+                        toReturn += "p" + i + "*p" + j + "=e\n";
+
+                }
+            }
+            toReturn += "\n";
+            for (int i = 1; i < permutationsNewOrder.Length; i++)
+            {
+                bool flag = false;
+                for (int j = 1; j < permutationsNewOrder.Length; j++)
+                {
+                    if (!flag)
+                    {
+                        int[] reverse = WithoutRepetition.ReversePermutation(permutationsNewOrder[j]);
+                        if (ArrayFunctions.CompareIntArrays(permutationsNewOrder[i], reverse))
+                            toReturn += "(p" + i + ")^(-1)=p" + j + "\n";
+                    }
+                }
+
+            }
+            return toReturn;
+        }
+        static public int[][] PermutationToCompositionOfTranpositions2(int[] permutation)
+        {
+            Check(permutation);
+            if (isIdentity(permutation))
+                throw new Exception("Permutation is identity. There aren't any transposistions.");
+            int[][] permutationCycle = WithoutRepetition.PermutationToCycle(permutation);
+            int[] identity = WithoutRepetition.CreateIdentityPermutation(permutation.Length);
+            int count = 0;
+            for (int i = 0; i < permutationCycle.Length; i++)
+                if (permutationCycle[i].Length > 1)
+                    count += permutationCycle[i].Length - 1;
+            int[][] transpositions = new int[count][];
+            int indexOfTransposition = 0;
+            int[][] cyclesInNewOrder = new int[permutationCycle.Length][];
+            for (int i = 0; i < permutationCycle.Length; i++)
+            {
+                int min = permutationCycle[i].Min();
+                int indexOfMin = 0;
+                for (int j = 0; j < permutationCycle[i].Length; j++)
+                    if (permutationCycle[i][j] == min)
+                        indexOfMin = j;
+                int index = 0;
+                cyclesInNewOrder[i] = new int[permutationCycle[i].Length];
+                for (int j = indexOfMin; j < permutationCycle[i].Length; j++)
+                {
+                    cyclesInNewOrder[i][index] = permutationCycle[i][j];
+                    index++;
+                }
+                for (int j = 0; j < indexOfMin; j++)
+                {
+                    cyclesInNewOrder[i][index] = permutationCycle[i][j];
+                    index++;
+                }
+                for (int k = 0; k < cyclesInNewOrder[i].Length - 1; k++)
+                {
+                    int first = 0, second = 0;
+                    for (int j = 0; j < identity.Length; j++)
+                        if (identity[j] == cyclesInNewOrder[i][k])
+                            first = j;
+                    for (int j = 0; j < identity.Length; j++)
+                        if (identity[j] == cyclesInNewOrder[i][k + 1])
+                            second = j;
+
+                    transpositions[indexOfTransposition] = WithoutRepetition.CreateIdentityPermutation(permutation.Length);
+                    int temp = transpositions[indexOfTransposition][first];
+                    transpositions[indexOfTransposition][first] = transpositions[indexOfTransposition][second];
+                    transpositions[indexOfTransposition][second] = temp;
+                    indexOfTransposition++;
+                }
+
+            }
+            return transpositions;
+        }
+        static public int[][] PermutationToNeighbouringTransposition1(int[] permutation) //najmniejsza w lewo
+        {
+            Check(permutation);
+            if (isIdentity(permutation))
+                throw new Exception("Permutation is identity. There aren't any transposistions.");
+            List<int[]> list = new List<int[]>();
+            bool[] tab = new bool[permutation.Length];
+            for (int i = 0; i < permutation.Length; i++)
+                if (permutation[i] == i + 1)
+                    tab[i] = true;
+            //for(int i)
+            for (int i = 0; i < permutation.Length; i++)
+            {
+                while (permutation[i] != (i + 1))
+                {
+                    for (int j = 0; j < permutation.Length; j++)
+                    {
+                        if (permutation[j] == i + 1)
+                        {
+                            int temp = permutation[j];
+                            permutation[j] = permutation[j - 1];
+                            permutation[j - 1] = temp;
+                            list.Add(MakeTransposition(j + 1, j, permutation.Length));
+                        }
+                    }
+                }
+
+            }
+            list.Reverse();
+            return list.ToArray();
+        }
+
+        static public int[][] PermutationToNeighbouringTransposition2(int[] permutation) //najmniejsza w lewo
+        {
+            Check(permutation);
+            if (isIdentity(permutation))
+                throw new Exception("Permutation is identity. There aren't any transposistions.");
+            List<int[]> list = new List<int[]>();
+            bool[] tab = new bool[permutation.Length];
+            for (int i = 0; i < permutation.Length; i++)
+                if (permutation[i] == i + 1)
+                    tab[i] = true;
+            //for(int i)
+            for (int i = permutation.Length - 1; i >= 0; i--)
+            {
+                while (permutation[i] != (i + 1))
+                {
+                    for (int j = permutation.Length - 1; j >= 0; j--)
+                    {
+                        if (permutation[j] == i + 1)
+                        {
+                            int temp = permutation[j];
+                            permutation[j] = permutation[j + 1];
+                            permutation[j + 1] = temp;
+                            list.Add(MakeTransposition(j + 2, j + 1, permutation.Length));
+                        }
+                    }
+                }
+
+            }
+            list.Reverse();
+            return list.ToArray();
+        }
+
+        static int[] MakeTransposition(int a, int b, int length)
+        {
+            int[] permutation = WithoutRepetition.CreateIdentityPermutation(length);
+            permutation[a - 1] = b;
+            permutation[b - 1] = a;
+            return permutation;
+        }
+
+        static public int[][] ListOfInversions(int[] permutation)
+        {
+            int numberOfInversion = InversionsCount(permutation);
+            int[][] listOfInversion = new int[numberOfInversion][];
+            int index = 0;
+            for (int i = 0; i < permutation.Length; i++)
+            {
+                for (int j = i + 1; j < permutation.Length; j++)
+                {
+                    if (permutation[j] < permutation[i])
+                    {
+                        listOfInversion[index] = new int[2];
+                        listOfInversion[index][0] = permutation[i];
+                        listOfInversion[index][1] = permutation[j];
+                        index++;
+                    }
+                }
+            }
+            return listOfInversion;
+        }
+
+        static bool isIdentity(int[] permutation)
+        {
+            int[] identity = CreateIdentityPermutation(permutation.Length);
+            if (ArrayFunctions.CompareIntArrays(identity, permutation))
+                return true;
+            return false;
+        }
+
     }
 }
+
